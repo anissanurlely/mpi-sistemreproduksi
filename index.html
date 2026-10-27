@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-EduReproduksi - Media Pembelajaran IPA Kelas 9 SMP</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            teal: '#0d9488',
+                            tealLight: '#14b8a6',
+                            tealSoft: '#ccfbf1',
+                            sky: '#0284c7',
+                            skyLight: '#38bdf8',
+                            amber: '#f59e0b',
+                            orange: '#f97316'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts (Poppins) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0d9488;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0f766e;
+        }
+        .tab-btn.active {
+            background-color: #0d9488;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .organ-hotspot {
+            transition: all 0.2s ease-in-out;
+        }
+        .organ-hotspot:hover {
+            transform: scale(1.2);
+            filter: drop-shadow(0 0 8px rgba(13, 148, 136, 0.6));
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printable-certificate, #printable-certificate * {
+                visibility: visible;
+            }
+            #printable-certificate {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between selection:bg-teal-200 selection:text-teal-900">
+
+    <!-- HEADER & NAVBAR -->
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-teal-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo & Web Title -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('home')">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-teal to-brand-sky flex items-center justify-center text-white shadow-md">
+                        <i data-lucide="dna" class="w-7 h-7"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-bold bg-gradient-to-r from-brand-teal to-brand-sky bg-clip-text text-transparent">
+                            BioExplora SMP
+                        </h1>
+                        <p class="text-xs text-slate-500 font-medium">Sistem Reproduksi Manusia • Kelas 9</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Tabs -->
+                <nav class="hidden md:flex items-center space-x-2 bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
+                    <button onclick="switchTab('home')" id="tab-home" class="tab-btn active px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2">
+                        <i data-lucide="home" class="w-4 h-4"></i> Home
+                    </button>
+                    <button onclick="switchTab('tujuan')" id="tab-tujuan" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:text-brand-teal transition-all flex items-center gap-2">
+                        <i data-lucide="target" class="w-4 h-4"></i> Tujuan
+                    </button>
+                    <button onclick="switchTab('materi')" id="tab-materi" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:text-brand-teal transition-all flex items-center gap-2">
+                        <i data-lucide="book-open" class="w-4 h-4"></i> Materi
+                    </button>
+                    <button onclick="switchTab('kuis')" id="tab-kuis" class="tab-btn px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:text-brand-teal transition-all flex items-center gap-2">
+                        <i data-lucide="gamepad-2" class="w-4 h-4"></i> Kuis Arena
+                    </button>
+                </nav>
+
+                <!-- Audio Controller Bar (Global TTS Control) -->
+                <div id="global-audio-status" class="hidden sm:flex items-center gap-2 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-full text-xs text-amber-800">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                    </span>
+                    <span id="audio-status-text">Membaca Teks...</span>
+                    <button onclick="stopTTS()" class="bg-amber-200 hover:bg-amber-300 p-1 rounded-full text-amber-900 transition" title="Hentikan Audio">
+                        <i data-lucide="square" class="w-3.5 h-3.5 fill-current"></i>
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button onclick="toggleMobileMenu()" class="md:hidden p-2.5 rounded-xl text-slate-600 hover:bg-slate-100 focus:outline-none">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-4 space-y-2">
+            <button onclick="switchTab('home'); toggleMobileMenu()" class="w-full text-left px-4 py-3 rounded-xl font-medium text-slate-700 hover:bg-teal-50 hover:text-brand-teal flex items-center gap-3">
+                <i data-lucide="home" class="w-5 h-5"></i> Home
+            </button>
+            <button onclick="switchTab('tujuan'); toggleMobileMenu()" class="w-full text-left px-4 py-3 rounded-xl font-medium text-slate-700 hover:bg-teal-50 hover:text-brand-teal flex items-center gap-3">
+                <i data-lucide="target" class="w-5 h-5"></i> Tujuan Pembelajaran
+            </button>
+            <button onclick="switchTab('materi'); toggleMobileMenu()" class="w-full text-left px-4 py-3 rounded-xl font-medium text-slate-700 hover:bg-teal-50 hover:text-brand-teal flex items-center gap-3">
+                <i data-lucide="book-open" class="w-5 h-5"></i> Materi Pembelajaran
+            </button>
+            <button onclick="switchTab('kuis'); toggleMobileMenu()" class="w-full text-left px-4 py-3 rounded-xl font-medium text-slate-700 hover:bg-teal-50 hover:text-brand-teal flex items-center gap-3">
+                <i data-lucide="gamepad-2" class="w-5 h-5"></i> Kuis Arena Gamifikasi
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+        <!-- SECTION 1: HOME -->
+        <section id="page-home" class="space-y-8 animate-fade-in">
+            <!-- Hero Banner -->
+            <div class="bg-gradient-to-br from-teal-600 via-teal-700 to-sky-700 rounded-3xl p-6 sm:p-10 text-white shadow-xl relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 opacity-10 pointer-events-none">
+                    <i data-lucide="activity" class="w-96 h-96"></i>
+                </div>
+                <div class="absolute right-1/4 top-0 opacity-10 pointer-events-none">
+                    <i data-lucide="heart-pulse" class="w-64 h-64"></i>
+                </div>
+
+                <div class="relative z-10 grid md:grid-cols-12 gap-8 items-center">
+                    <div class="md:col-span-8 space-y-4">
+                        <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-semibold text-teal-100">
+                            <i data-lucide="sparkles" class="w-4 h-4 text-amber-300"></i> Media Pembelajaran Interaktif IPA SMP
+                        </div>
+                        <h2 class="text-3xl sm:text-5xl font-extrabold leading-tight">
+                            Eksplorasi Keajaiban <br>
+                            <span class="text-amber-300">Sistem Reproduksi Manusia</span>
+                        </h2>
+                        <p class="text-teal-50 text-base sm:text-lg leading-relaxed max-w-2xl">
+                            Selamat datang, Sahabat Sains! Mari jelajahi bagaimana tubuh kita bekerja, menjaga kesehatan reproduksi, serta menguji pemahaman melalui Kuis Gamifikasi Interaktif.
+                        </p>
+                        
+                        <!-- Teacher Greeting Badge -->
+                        <div class="flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/20 p-3.5 rounded-2xl max-w-md mt-4">
+                            <div class="w-12 h-12 rounded-full bg-amber-400 border-2 border-white flex items-center justify-center text-slate-800 font-bold text-xl shadow">
+                                AN
+                            </div>
+                            <div>
+                                <p class="text-xs text-teal-200 uppercase font-semibold tracking-wider">Guru Pengembang</p>
+                                <p class="text-sm font-bold text-white">Anissa Nurlely, S.Pd.</p>
+                                <p class="text-xs text-teal-100">SMP Kelas 9 (Fase D)</p>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="pt-4 flex flex-wrap gap-3">
+                            <button onclick="switchTab('materi')" class="bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold px-6 py-3.5 rounded-2xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2 transform hover:-translate-y-0.5">
+                                <i data-lucide="play" class="w-5 h-5 fill-current"></i> Mulai Belajar
+                            </button>
+                            <button onclick="switchTab('kuis')" class="bg-white/20 hover:bg-white/30 text-white font-bold px-6 py-3.5 rounded-2xl backdrop-blur-md transition-all flex items-center gap-2">
+                                <i data-lucide="gamepad-2" class="w-5 h-5"></i> Mainkan Kuis Arena 🎮
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Hero Vector Avatar / Illustration -->
+                    <div class="md:col-span-4 flex justify-center">
+                        <div class="relative w-64 h-64 bg-white/10 rounded-full p-4 border-2 border-white/20 shadow-inner flex items-center justify-center">
+                            <div class="text-center space-y-3">
+                                <i data-lucide="user-check" class="w-28 h-28 text-teal-200 mx-auto"></i>
+                                <span class="block bg-amber-400 text-slate-900 font-bold text-xs px-3 py-1 rounded-full shadow">EduSains Fase D</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Access Navigation Cards -->
+            <div class="grid sm:grid-cols-3 gap-6">
+                <div onclick="switchTab('tujuan')" class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer group hover:border-brand-teal">
+                    <div class="w-12 h-12 rounded-2xl bg-teal-100 text-brand-teal flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i data-lucide="target" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-brand-teal">Tujuan Pembelajaran</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Ketahui capaian pembelajaran (CP) dan indikator keberhasilan belajar kamu di materi ini.
+                    </p>
+                </div>
+
+                <div onclick="switchTab('materi')" class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer group hover:border-brand-sky">
+                    <div class="w-12 h-12 rounded-2xl bg-sky-100 text-brand-sky flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i data-lucide="layers" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-brand-sky">Materi & Anatomi</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Jelajahi organ reproduksi pria & wanita, siklus menstruasi, serta tips pola hidup sehat.
+                    </p>
+                </div>
+
+                <div onclick="switchTab('kuis')" class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer group hover:border-brand-amber">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-100 text-brand-amber flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i data-lucide="award" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-brand-amber">Kuis Gamifikasi</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Uji pemahamanmu lewat 10 Pilihan Ganda & 6 Tebak Organ Visual Interaktif!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 2: TUJUAN PEMBELAJARAN -->
+        <section id="page-tujuan" class="hidden space-y-8 animate-fade-in">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+                <div>
+                    <span class="text-xs font-bold text-brand-teal uppercase tracking-widest">Capaian Pembelajaran (CP)</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800">Tujuan & Indikator Pembelajaran</h2>
+                    <p class="text-slate-600 text-sm">Fase D IPA SMP Kelas 9 • Kurikulum Merdeka</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="speakText('tujuan-text-container')" class="bg-teal-100 hover:bg-teal-200 text-brand-teal font-semibold px-4 py-2 rounded-xl text-sm transition flex items-center gap-2">
+                        <i data-lucide="volume-2" class="w-4 h-4"></i> 🔊 Baca Teks
+                    </button>
+                    <button onclick="stopTTS()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold px-3 py-2 rounded-xl text-sm transition" title="Hentikan">
+                        <i data-lucide="square" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="tujuan-text-container" class="space-y-6">
+                <div class="bg-gradient-to-r from-teal-500 to-sky-600 rounded-3xl p-6 text-white shadow-md">
+                    <div class="flex items-center gap-3 mb-2">
+                        <i data-lucide="award" class="w-6 h-6 text-amber-300"></i>
+                        <h3 class="font-bold text-lg">Capaian Pembelajaran (CP) Fase D</h3>
+                    </div>
+                    <p class="text-teal-50 text-sm leading-relaxed">
+                        "Pada akhir Fase D, peserta didik memahami sistem organ tubuh manusia yang berhubungan dengan pemeliharaan kesehatan, salah satunya adalah sistem reproduksi; memahami pentingnya menjaga kesehatan organ reproduksi serta pencegahan penyakit yang ditimbulkannya."
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+                        <div class="w-10 h-10 rounded-xl bg-teal-100 text-brand-teal font-bold flex items-center justify-center text-lg">1</div>
+                        <h4 class="font-bold text-slate-800 text-base">Identifikasi Anatomi & Organ</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            Peserta didik mampu mengidentifikasi struktur, nama, dan fungsi organ-organ penyusun sistem reproduksi pada laki-laki dan perempuan secara akurat.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+                        <div class="w-10 h-10 rounded-xl bg-sky-100 text-brand-sky font-bold flex items-center justify-center text-lg">2</div>
+                        <h4 class="font-bold text-slate-800 text-base">Memahami Fisiologi Reproduksi</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            Peserta didik mampu mendeskripsikan proses pembentukan sel kelamin (spermatogenesis & oogenesis), siklus menstruasi pada wanita, serta proses fertilisasi.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+                        <div class="w-10 h-10 rounded-xl bg-amber-100 text-brand-amber font-bold flex items-center justify-center text-lg">3</div>
+                        <h4 class="font-bold text-slate-800 text-base">Penyakit & Pencegahan</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            Peserta didik dapat menjelaskan berbagai kelainan atau penyakit pada sistem reproduksi (HIV, Gonore, Sifilis, dll) serta upaya pencegahannya.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 font-bold flex items-center justify-center text-lg">4</div>
+                        <h4 class="font-bold text-slate-800 text-base">Sikap & Pola Hidup Sehat</h4>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            Peserta didik menerapkan kebiasaan hidup bersih dan bertanggung jawab dalam menjaga kesehatan organ reproduksi diri sendiri.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 3: MATERI PEMBELAJARAN INTERAKTIF -->
+        <section id="page-materi" class="hidden space-y-8 animate-fade-in">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+                <div>
+                    <span class="text-xs font-bold text-brand-teal uppercase tracking-widest">Modul Pembelajaran</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800">Materi Anatomi & Fisiologi</h2>
+                    <p class="text-slate-600 text-sm">Pilih topik materi di bawah ini untuk memulai eksplorasi interaktif</p>
+                </div>
+            </div>
+
+            <!-- Sub-tab Navigation Materi -->
+            <div class="flex flex-wrap gap-2 border-b border-slate-200 pb-2">
+                <button onclick="switchMateriSubTab('pria')" id="subtab-pria" class="subtab-materi bg-brand-teal text-white px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition flex items-center gap-2 shadow-sm">
+                    <i data-lucide="user" class="w-4 h-4"></i> Organ Reproduksi Pria
+                </button>
+                <button onclick="switchMateriSubTab('wanita')" id="subtab-wanita" class="subtab-materi bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition flex items-center gap-2">
+                    <i data-lucide="user-check" class="w-4 h-4"></i> Organ Reproduksi Wanita
+                </button>
+                <button onclick="switchMateriSubTab('siklus')" id="subtab-siklus" class="subtab-materi bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition flex items-center gap-2">
+                    <i data-lucide="refresh-cw" class="w-4 h-4"></i> Gametogenesis & Fertilisasi
+                </button>
+                <button onclick="switchMateriSubTab('kesehatan')" id="subtab-kesehatan" class="subtab-materi bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition flex items-center gap-2">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i> Kesehatan & Penyakit
+                </button>
+            </div>
+
+            <!-- MATERI SUB-SECTION 1: ORGAN PRIA -->
+            <div id="materi-pria" class="space-y-6">
+                <div class="flex items-center justify-between bg-sky-50 p-4 rounded-2xl border border-sky-200">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-brand-sky text-white rounded-xl">
+                            <i data-lucide="info" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="font-bold text-sky-900 text-base">Sistem Reproduksi Laki-Laki</h3>
+                    </div>
+                    <button onclick="speakText('text-pria-content')" class="bg-brand-sky text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold hover:bg-sky-700 transition flex items-center gap-1.5">
+                        <i data-lucide="volume-2" class="w-4 h-4"></i> 🔊 Baca Teks
+                    </button>
+                </div>
+
+                <div id="text-pria-content" class="grid md:grid-cols-12 gap-8 items-start">
+                    <div class="md:col-span-6 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm text-center relative">
+                        <h4 class="font-bold text-slate-700 mb-4 flex items-center justify-center gap-2">
+                            <i data-lucide="eye" class="w-4 h-4 text-brand-sky"></i> Interactive Vector Map (Pria)
+                        </h4>
+                        
+                        <div class="relative mx-auto w-full max-w-xs h-72 bg-gradient-to-b from-sky-50 to-blue-100 rounded-2xl border border-sky-200 flex items-center justify-center overflow-hidden p-4">
+                            <svg viewBox="0 0 200 200" class="w-full h-full">
+                                <circle cx="100" cy="140" r="22" fill="#38bdf8" opacity="0.3" />
+                                <circle cx="100" cy="140" r="16" fill="#0284c7" />
+                                <path d="M 100 124 C 100 80, 140 80, 140 100 C 140 120, 100 110, 100 110" fill="none" stroke="#0284c7" stroke-width="4" stroke-dasharray="2,2"/>
+                                <rect x="90" y="70" width="20" height="50" rx="8" fill="#7dd3fc" />
+                                <line x1="100" y1="70" x2="100" y2="120" stroke="#0369a1" stroke-width="2" />
+                                <circle cx="135" cy="85" r="10" fill="#f59e0b" />
+                            </svg>
+
+                            <button onclick="showOrganDetail('Testis', 'Organ utama pria yang berfungsi menghasilkan sel sperma dan hormon testosteron.')" class="organ-hotspot absolute bottom-12 left-1/2 -translate-x-1/2 bg-amber-400 hover:bg-amber-500 text-slate-900 font-bold w-7 h-7 rounded-full shadow-lg flex items-center justify-center text-xs transition border-2 border-white">
+                                1
+                            </button>
+                            <button onclick="showOrganDetail('Skrotum', 'Kantong kulit yang membungkus testis dan menjaga suhu testis agar optimal untuk produksi sperma.')" class="organ-hotspot absolute bottom-4 left-1/2 -translate-x-1/2 bg-amber-400 hover:bg-amber-500 text-slate-900 font-bold w-7 h-7 rounded-full shadow-lg flex items-center justify-center text-xs transition border-2 border-white">
+                                2
+                            </button>
+                            <button onclick="showOrganDetail('Vas Deferens', 'Saluran yang menghubungkan epididimis menuju uretra untuk mengangkut sperma matang.')" class="organ-hotspot absolute top-20 right-12 bg-amber-400 hover:bg-amber-500 text-slate-900 font-bold w-7 h-7 rounded-full shadow-lg flex items-center justify-center text-xs transition border-2 border-white">
+                                3
+                            </button>
+                            <button onclick="showOrganDetail('Penis & Uretra', 'Penis merupakan organ luar untuk menyalurkan sperma, sedangkan uretra adalah saluran tempat keluarnya urin dan sperma.')" class="organ-hotspot absolute top-16 left-1/2 -translate-x-1/2 bg-amber-400 hover:bg-amber-500 text-slate-900 font-bold w-7 h-7 rounded-full shadow-lg flex items-center justify-center text-xs transition border-2 border-white">
+                                4
+                            </button>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-3">Klik angka hotspot di atas untuk melihat penjelasan detail!</p>
+                    </div>
+
+                    <div class="md:col-span-6 space-y-4">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-brand-sky transition">
+                            <h5 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                <span class="bg-sky-100 text-brand-sky w-6 h-6 rounded-lg text-xs flex items-center justify-center">1</span>
+                                Testis & Skrotum
+                            </h5>
+                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                                <strong>Testis</strong> memproduksi sperma dan testosteron. <strong>Skrotum</strong> menjaga suhu testis sekitar 1-2°C di bawah suhu tubuh.
+                            </p>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-brand-sky transition">
+                            <h5 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                <span class="bg-sky-100 text-brand-sky w-6 h-6 rounded-lg text-xs flex items-center justify-center">2</span>
+                                Saluran Sperma (Epididimis & Vas Deferens)
+                            </h5>
+                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                                <strong>Epididimis</strong> tempat pematangan dan penyimpanan sementara sperma. <strong>Vas Deferens</strong> mengangkut sperma matang menuju uretra.
+                            </p>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-brand-sky transition">
+                            <h5 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                <span class="bg-sky-100 text-brand-sky w-6 h-6 rounded-lg text-xs flex items-center justify-center">3</span>
+                                Kelenjar Aksesori (Vesikula Seminalis & Prostat)
+                            </h5>
+                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                                Menghasilkan cairan semen yang kaya nutrisi (fruktosa) dan bersifat basa untuk melindungi sperma.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MATERI SUB-SECTION 2: ORGAN WANITA -->
+            <div id="materi-wanita" class="hidden space-y-6">
+                <div class="flex items-center justify-between bg-teal-50 p-4 rounded-2xl border border-teal-200">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-brand-teal text-white rounded-xl">
+                            <i data-lucide="info" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="font-bold text-teal-900 text-base">Sistem Reproduksi Perempuan</h3>
+                    </div>
+                    <button onclick="speakText('text-wanita-content')" class="bg-brand-teal text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold hover:bg-teal-700 transition flex items-center gap-1.5">
+                        <i data-lucide="volume-2" class="w-4 h-4"></i> 🔊 Baca Teks
+                    </button>
+                </div>
+
+                <div id="text-wanita-content" class="grid md:grid-cols-12 gap-8 items-start">
+                    <div class="md:col-span-6 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm text-center relative">
+                        <h4 class="font-bold text-slate-700 mb-4 flex items-center justify-center gap-2">
+                            <i data-lucide="eye" class="w-4 h-4 text-brand-teal"></i> Interactive Vector Map (Wanita)
+                        </h4>
+                        
+                        <div class="relative mx-auto w-full max-w-xs h-72 bg-gradient-to-b from-teal-50 to-emerald-100 rounded-2xl border border-teal-200 flex items-center justify-center overflow-hidden p-4">
+                            <svg viewBox="0 0 200 200" class="w-full h-full">
+                                <path d="M 70 80 Q 100 60 130 80 L 115 130 Q 100 145 85 130 Z" fill="#14b8a6" opacity="0.4"/>
+                                <path d="M 80 85 Q 100 70 120 85 L 110 120 Q 100 130 90 120 Z" fill="#0d9488" />
+                                <path d="M 70 80 Q 30 70 35 100" fill="none" stroke="#0d9488" stroke-width="5"/>
+                                <path d="M 130 80 Q 170 70 165 100" fill="none" stroke="#0d9488" stroke-width="5"/>
+                                <circle cx="35" cy="105" r="12" fill="#f59e0b"/>
+                                <circle cx="165" cy="105" r="12" fill="#f59e0b"/>
+                                <rect x="90" y="130" width="20" height="40" fill="#2dd4bf" rx="4"/>
+                            </svg>
+
+                            <button onclick="showOrganDetail('Ovarium', 'Indung telur yang memproduksi sel telur (ovum) serta hormon estrogen dan progesteron.')" class="organ-hotspot absolute top-28 left-6 bg-amber-400 hover:bg-amber-500 text-slate-900 font-bold w-7 h-7 rounded-full shadow-lg flex items-center justify-center text-xs transition border-2 border-white">
+                                1
+                            </button>
+                            <button onclick="showOrganDetail('Tuba Falopi (Oviduk)', 'Saluran telur tempat terjadinya proses fertilisasi (pembuahan) antara sperma dan ovum.')" class="organ-hotspot absolute top-16 left-12 bg-amber-400 hover:bg-amber-500 text-slate-900 font-bold w-7 h-7 rounded-full shadow-lg flex items-center justify-center text-xs transition border-2 border-white">
+                                2
+                            </button>
+                            <button onclick="showOrganDetail('Uterus (Rahim)', 'Organ berdinding tebal tempat berkembangnya janin selama masa kehamilan.')" class="organ-hotspot absolute top-24 left-1/2 -translate-x-1/2 bg-amber-400 hover:bg-amber-500 text-slate-900 font-bold w-7 h-7 rounded-full shadow-lg flex items-center justify-center text-xs transition border-2 border-white">
+                                3
+                            </button>
+                            <button onclick="showOrganDetail('Vagina', 'Saluran tempat keluarnya darah menstruasi dan jalan lahirnya bayi.')" class="organ-hotspot absolute bottom-8 left-1/2 -translate-x-1/2 bg-amber-400 hover:bg-amber-500 text-slate-900 font-bold w-7 h-7 rounded-full shadow-lg flex items-center justify-center text-xs transition border-2 border-white">
+                                4
+                            </button>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-3">Klik angka hotspot di atas untuk melihat penjelasan detail!</p>
+                    </div>
+
+                    <div class="md:col-span-6 space-y-4">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-brand-teal transition">
+                            <h5 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                <span class="bg-teal-100 text-brand-teal w-6 h-6 rounded-lg text-xs flex items-center justify-center">1</span>
+                                Ovarium (Indung Telur)
+                            </h5>
+                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                                Berjumlah sepasang, memproduksi <strong>sel telur (ovum)</strong> serta hormon <strong>Estrogen</strong> dan <strong>Progesteron</strong>.
+                            </p>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-brand-teal transition">
+                            <h5 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                <span class="bg-teal-100 text-brand-teal w-6 h-6 rounded-lg text-xs flex items-center justify-center">2</span>
+                                Tuba Falopi (Oviduk)
+                            </h5>
+                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                                Saluran telur tempat terjadinya proses <strong>fertilisasi</strong> (pembuahan).
+                            </p>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-brand-teal transition">
+                            <h5 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                <span class="bg-teal-100 text-brand-teal w-6 h-6 rounded-lg text-xs flex items-center justify-center">3</span>
+                                Uterus (Rahim) & Vagina
+                            </h5>
+                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                                <strong>Uterus</strong> organ tempat berkembangnya janin. <strong>Vagina</strong> saluran kelahiran dan keluarnya darah menstruasi.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MATERI SUB-SECTION 3: SIKLUS & FERTILISASI -->
+            <div id="materi-siklus" class="hidden space-y-6">
+                <div class="flex items-center justify-between bg-amber-50 p-4 rounded-2xl border border-amber-200">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-brand-amber text-white rounded-xl">
+                            <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="font-bold text-amber-900 text-base">Gametogenesis, Siklus Menstruasi & Fertilisasi</h3>
+                    </div>
+                    <button onclick="speakText('text-siklus-content')" class="bg-brand-amber text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold hover:bg-amber-600 transition flex items-center gap-1.5">
+                        <i data-lucide="volume-2" class="w-4 h-4"></i> 🔊 Baca Teks
+                    </button>
+                </div>
+
+                <div id="text-siklus-content" class="grid md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+                        <div class="w-10 h-10 rounded-xl bg-sky-100 text-brand-sky flex items-center justify-center font-bold">1</div>
+                        <h4 class="font-bold text-slate-800 text-sm">Gametogenesis</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Proses pembentukan sel kelamin. <strong>Spermatogenesis</strong> menghasilkan 4 sel sperma fungsional di testis. <strong>Oogenesis</strong> menghasilkan 1 sel ovum fungsional & 3 badan polar di ovarium.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+                        <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center font-bold">2</div>
+                        <h4 class="font-bold text-slate-800 text-sm">Siklus Menstruasi</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Siklus rata-rata 28 hari. Peluruhan dinding rahim (endometrium) yang tebal terjadi jika sel telur tidak dibuahi oleh sperma. Pelepasan sel telur matang dari ovarium disebut <strong>Ovulasi</strong>.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">3</div>
+                        <h4 class="font-bold text-slate-800 text-sm">Fertilisasi & Kehamilan</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Peleburan inti sel sperma dan sel telur di tuba falopi menghasilkan <strong>Zigot</strong>. Zigot membelah menjadi embrio dan menempel (implantasi) di dinding rahim hingga berkembang menjadi janin.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MATERI SUB-SECTION 4: KESEHATAN & PENYAKIT -->
+            <div id="materi-kesehatan" class="hidden space-y-6">
+                <div class="flex items-center justify-between bg-emerald-50 p-4 rounded-2xl border border-emerald-200">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-emerald-600 text-white rounded-xl">
+                            <i data-lucide="shield-check" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="font-bold text-emerald-900 text-base">Kesehatan Reproduksi & Upaya Pencegahan</h3>
+                    </div>
+                    <button onclick="speakText('text-kesehatan-content')" class="bg-emerald-600 text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold hover:bg-emerald-700 transition flex items-center gap-1.5">
+                        <i data-lucide="volume-2" class="w-4 h-4"></i> 🔊 Baca Teks
+                    </button>
+                </div>
+
+                <div id="text-kesehatan-content" class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+                        <h4 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                            <i data-lucide="alert-circle" class="w-5 h-5 text-amber-500"></i> Gangguan & Penyakit Menular Sexual
+                        </h4>
+                        <div class="space-y-2 text-xs">
+                            <div class="p-3 bg-slate-50 rounded-2xl border-l-4 border-amber-500">
+                                <strong>HIV / AIDS</strong>: Menyerang sistem kekebalan tubuh (sel darah putih/T-cell).
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-2xl border-l-4 border-amber-500">
+                                <strong>Gonore (Kencing Nanah)</strong>: Infeksi bakteri <i>Neisseria gonorrhoeae</i>.
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-2xl border-l-4 border-amber-500">
+                                <strong>Sifilis (Raja Singa)</strong>: Infeksi bakteri <i>Treponema pallidum</i>.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+                        <h4 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                            <i data-lucide="heart" class="w-5 h-5 text-brand-teal"></i> Upaya Menjaga Kesehatan Organ Reproduksi
+                        </h4>
+                        <ul class="space-y-2 text-xs text-slate-600">
+                            <li class="bg-teal-50/50 p-2.5 rounded-xl">1. Mengganti pakaian dalam minimal 2-3 kali sehari dengan bahan katun yang menyerap keringat.</li>
+                            <li class="bg-teal-50/50 p-2.5 rounded-xl">2. Membersihkan organ luar dari arah depan ke belakang untuk mencegah bakteri dari anus.</li>
+                            <li class="bg-teal-50/50 p-2.5 rounded-xl">3. Mengeringkan area intim dengan handuk bersih atau tisu setelah buang air.</li>
+                            <li class="bg-teal-50/50 p-2.5 rounded-xl">4. Menjauhi pergaulan bebas, narkoba, dan menjaga pola hidup sehat berolahraga.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Pop-up Detail Organ -->
+            <div id="organ-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+                <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                        <h4 id="modal-title" class="font-bold text-slate-800 text-lg">Detail Organ</h4>
+                        <button onclick="closeOrganModal()" class="text-slate-400 hover:text-slate-600 p-1">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                    <p id="modal-desc" class="text-sm text-slate-600 leading-relaxed"></p>
+                    <button onclick="closeOrganModal()" class="w-full bg-brand-teal text-white font-bold py-2.5 rounded-xl hover:bg-teal-700 transition text-sm">
+                        Mengerti
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 4: KUIS GAMIFIKASI INTERAKTIF (MULTI-MODE ARENA) -->
+        <section id="page-kuis" class="hidden space-y-8 animate-fade-in">
+            <!-- Header Section -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+                <div>
+                    <span class="text-xs font-bold text-brand-amber uppercase tracking-widest">Kuis Arena Gamifikasi</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800">Arena Uji Kemampuan Multi-Mode 🎮</h2>
+                    <p class="text-slate-600 text-sm">Pilih mode permainan favoritmu, raih skor tertinggi & sertifikat digital!</p>
+                </div>
+            </div>
+
+            <!-- Mode Selection Hub Screen -->
+            <div id="quiz-hub" class="space-y-6">
+                <!-- User Profile Input -->
+                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-teal-100 text-brand-teal flex items-center justify-center font-bold text-xl">
+                            👤
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase">Nama Siswa untuk Sertifikat:</label>
+                            <input type="text" id="player-name-input" placeholder="Masukkan Nama Lengkapmu..." value="Siswa Hebat SMP" class="mt-1 px-4 py-2 border border-slate-300 rounded-xl text-sm font-bold text-slate-800 focus:outline-none focus:border-brand-teal w-full sm:w-64">
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 text-xs font-bold text-slate-600">
+                        <span class="bg-amber-100 text-amber-800 px-3.5 py-2 rounded-full flex items-center gap-1.5 shadow-sm">
+                            ⭐ Skor Terakhir: <span id="hub-total-score">0</span> Poin
+                        </span>
+                    </div>
+                </div>
+
+                <!-- 4 Mode Quiz Cards Grid -->
+                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Mode 1 Card -->
+                    <div onclick="initQuizMode('classic')" class="bg-white p-6 rounded-3xl border-2 border-teal-100 hover:border-brand-teal shadow-sm hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 rounded-2xl bg-teal-100 text-brand-teal flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <i data-lucide="help-circle" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-[10px] font-extrabold bg-teal-100 text-brand-teal px-2.5 py-1 rounded-full uppercase">Mode 1 • 10 Soal</span>
+                            <h3 class="text-base font-bold text-slate-800 mt-2 group-hover:text-brand-teal">10 Soal Pilihan Ganda</h3>
+                            <p class="text-xs text-slate-500 mt-1">Soal komprehensif teori SMP Kelas 9 dilengkapi bantuan 50:50 & Hint.</p>
+                        </div>
+                        <button class="mt-4 w-full bg-brand-teal text-white text-xs font-bold py-2.5 rounded-xl group-hover:bg-teal-700 transition">Mainkan Mode 1</button>
+                    </div>
+
+                    <!-- Mode 2 Card -->
+                    <div onclick="initQuizMode('hotspot')" class="bg-white p-6 rounded-3xl border-2 border-sky-100 hover:border-brand-sky shadow-sm hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 rounded-2xl bg-sky-100 text-brand-sky flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <i data-lucide="eye" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-[10px] font-extrabold bg-sky-100 text-brand-sky px-2.5 py-1 rounded-full uppercase">Mode 2 • 6 Soal</span>
+                            <h3 class="text-base font-bold text-slate-800 mt-2 group-hover:text-brand-sky">Tebak Organ Visual SVG</h3>
+                            <p class="text-xs text-slate-500 mt-1">Klik langsung lokasi organ yang tepat pada diagram gambar SVG interaktif!</p>
+                        </div>
+                        <button class="mt-4 w-full bg-brand-sky text-white text-xs font-bold py-2.5 rounded-xl group-hover:bg-sky-700 transition">Mainkan Mode 2</button>
+                    </div>
+
+                    <!-- Mode 3 Card -->
+                    <div onclick="initQuizMode('match')" class="bg-white p-6 rounded-3xl border-2 border-amber-100 hover:border-brand-amber shadow-sm hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 rounded-2xl bg-amber-100 text-brand-amber flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <i data-lucide="shuffle" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-[10px] font-extrabold bg-amber-100 text-brand-amber px-2.5 py-1 rounded-full uppercase">Mode 3</span>
+                            <h3 class="text-base font-bold text-slate-800 mt-2 group-hover:text-brand-amber">Jodohkan Pasangan</h3>
+                            <p class="text-xs text-slate-500 mt-1">Cocokkan nama organ dengan fungsinya secara tepat.</p>
+                        </div>
+                        <button class="mt-4 w-full bg-brand-amber text-white text-xs font-bold py-2.5 rounded-xl group-hover:bg-amber-600 transition">Mainkan Mode 3</button>
+                    </div>
+
+                    <!-- Mode 4 Card -->
+                    <div onclick="initQuizMode('rapid')" class="bg-white p-6 rounded-3xl border-2 border-rose-100 hover:border-rose-500 shadow-sm hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <i data-lucide="zap" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-[10px] font-extrabold bg-rose-100 text-rose-600 px-2.5 py-1 rounded-full uppercase">Mode 4</span>
+                            <h3 class="text-base font-bold text-slate-800 mt-2 group-hover:text-rose-600">Rapid True/False</h3>
+                            <p class="text-xs text-slate-500 mt-1">Tantangan Benar/Salah berpacu dengan timer countdown!</p>
+                        </div>
+                        <button class="mt-4 w-full bg-rose-500 text-white text-xs font-bold py-2.5 rounded-xl group-hover:bg-rose-600 transition">Mainkan Mode 4</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACTIVE QUIZ PLAY ARENA (DYNAMIC FOR ALL MODES) -->
+            <div id="quiz-arena" class="hidden max-w-3xl mx-auto space-y-6">
+                <!-- Status Top Bar (HP, Streak, Score, Timer) -->
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3 text-xs font-bold">
+                    <!-- Hearts HP -->
+                    <div class="flex items-center gap-1.5 bg-rose-50 border border-rose-100 px-3 py-1.5 rounded-xl text-rose-600">
+                        <span>Nyawa:</span>
+                        <div id="hp-hearts-container" class="flex gap-1 text-base">❤️❤️❤️</div>
+                    </div>
+
+                    <!-- Streak Combo -->
+                    <div class="flex items-center gap-1.5 bg-amber-50 border border-amber-100 px-3 py-1.5 rounded-xl text-amber-700">
+                        <i data-lucide="flame" class="w-4 h-4 fill-current text-amber-500"></i>
+                        <span>Streak: <span id="streak-counter" class="text-amber-800 font-extrabold">0x</span></span>
+                    </div>
+
+                    <!-- Score -->
+                    <div class="flex items-center gap-1.5 bg-teal-50 border border-teal-100 px-3 py-1.5 rounded-xl text-brand-teal">
+                        <span>Skor: <span id="live-quiz-score" class="font-extrabold text-sm">0</span></span>
+                    </div>
+
+                    <!-- Rapid Timer (Visible in rapid & classic mode) -->
+                    <div id="rapid-timer-box" class="hidden flex items-center gap-1.5 bg-sky-50 border border-sky-100 px-3 py-1.5 rounded-xl text-brand-sky">
+                        <i data-lucide="clock" class="w-4 h-4"></i>
+                        <span id="rapid-timer-text">15s</span>
+                    </div>
+
+                    <!-- Exit Arena Button -->
+                    <button onclick="exitQuizArena()" class="text-slate-400 hover:text-slate-600 p-1">
+                        <i data-lucide="x-circle" class="w-6 h-6"></i>
+                    </button>
+                </div>
+
+                <!-- Main Arena Container Screen -->
+                <div class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6 relative overflow-hidden">
+                    
+                    <!-- DYNAMIC MODE CONTENT CONTAINER -->
+                    <div id="dynamic-mode-content">
+                        <!-- Injected via JavaScript based on mode -->
+                    </div>
+
+                    <!-- Explanation Feedback Box -->
+                    <div id="arena-feedback-box" class="hidden p-4 rounded-2xl text-xs space-y-1">
+                        <p id="arena-feedback-title" class="font-bold"></p>
+                        <p id="arena-feedback-desc" class="text-slate-700 leading-relaxed"></p>
+                    </div>
+
+                    <!-- Next Button -->
+                    <div class="flex justify-end pt-2">
+                        <button id="btn-arena-next" onclick="nextArenaQuestion()" class="hidden bg-brand-teal hover:bg-teal-700 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition flex items-center gap-2">
+                            Lanjut <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESULT & CERTIFICATE SCREEN -->
+            <div id="quiz-result-arena" class="hidden max-w-3xl mx-auto space-y-6">
+                <!-- Result Overview Card -->
+                <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm text-center space-y-6">
+                    <div class="w-20 h-20 rounded-full bg-amber-100 text-brand-amber flex items-center justify-center mx-auto shadow-md">
+                        <i data-lucide="trophy" class="w-10 h-10"></i>
+                    </div>
+
+                    <div>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Selesai Kuis Arena</span>
+                        <h3 id="final-score-display" class="text-4xl font-extrabold text-slate-800 mt-1">100 Poin</h3>
+                        <p id="final-badge-title" class="text-base font-bold text-brand-teal mt-2">Gelar: Master Biologi Reproduksi 🎓</p>
+                    </div>
+
+                    <div class="flex justify-center gap-3">
+                        <button onclick="exitQuizArena()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-5 py-2.5 rounded-xl text-xs transition">
+                            Pilih Mode Lain 🎮
+                        </button>
+                        <button onclick="window.print()" class="bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold px-5 py-2.5 rounded-xl text-xs transition flex items-center gap-1.5 shadow">
+                            <i data-lucide="printer" class="w-4 h-4"></i> Cetak Sertifikat Digital 📜
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Printable Digital Certificate Card -->
+                <div id="printable-certificate" class="bg-gradient-to-br from-teal-50 via-white to-sky-50 border-8 border-double border-teal-600 rounded-3xl p-8 sm:p-12 shadow-2xl relative text-center space-y-6 my-8">
+                    <!-- Certificate Header -->
+                    <div class="flex items-center justify-between border-b-2 border-teal-200 pb-4">
+                        <div class="text-left">
+                            <h4 class="text-lg font-black text-brand-teal">BioExplora SMP</h4>
+                            <p class="text-[10px] text-slate-500">Media Pembelajaran IPA Terpadu</p>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-brand-teal text-white flex items-center justify-center font-bold">
+                            <i data-lucide="award" class="w-7 h-7"></i>
+                        </div>
+                    </div>
+
+                    <!-- Certificate Title -->
+                    <div>
+                        <h2 class="text-2xl sm:text-3xl font-serif font-bold text-slate-800 uppercase tracking-widest">Sertifikat Kelulusan</h2>
+                        <p class="text-xs text-slate-500 mt-1">Diberikan atas prestasi kelulusan Kuis Gamifikasi Sistem Reproduksi</p>
+                    </div>
+
+                    <!-- Student Name -->
+                    <div class="py-2">
+                        <p class="text-xs text-slate-400">Diberikan kepada:</p>
+                        <h3 id="cert-student-name" class="text-2xl sm:text-3xl font-extrabold text-brand-teal underline decoration-amber-400 decoration-4 underline-offset-8 mt-1">
+                            Siswa Hebat SMP
+                        </h3>
+                    </div>
+
+                    <p class="text-xs text-slate-600 max-w-lg mx-auto leading-relaxed">
+                        Telah berhasil menyelesaikan tantangan Kuis Interaktif Sistem Reproduksi Manusia untuk SMP Kelas 9 (Fase D IPA) dengan nilai sangat baik.
+                    </p>
+
+                    <!-- Signatures -->
+                    <div class="grid grid-cols-2 pt-8 border-t border-slate-200 text-xs">
+                        <div>
+                            <p class="text-slate-400">Tanggal Selesai</p>
+                            <p id="cert-date" class="font-bold text-slate-700 mt-1">2026</p>
+                        </div>
+                        <div>
+                            <p class="text-slate-400">Guru Pengembang IPA</p>
+                            <p class="font-bold text-brand-teal mt-1">Anissa Nurlely, S.Pd.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-slate-200 py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p class="text-xs text-slate-500">
+                Media Pembelajaran Interaktif IPA SMP Kelas 9 • Dikembangkan oleh <strong class="text-brand-teal">Anissa Nurlely, S.Pd.</strong>
+            </p>
+            <p class="text-[10px] text-slate-400">
+                &copy; 2026 BioExplora Edukasi. Dirancang untuk Fase D Kurikulum Merdeka.
+            </p>
+        </div>
+    </footer>
+
+
+    <!-- JAVASCRIPT LOGIC ENGINE -->
+    <script>
+        /* ==========================================================================
+           1. INITIALIZATION & NAVIGATION
+           ========================================================================== */
+        window.onload = function() {
+            lucide.createIcons();
+            document.getElementById('cert-date').innerText = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+        };
+
+        function switchTab(tabId) {
+            stopTTS();
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            
+            const target = document.getElementById('page-' + tabId);
+            if (target) target.classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.add('text-slate-600');
+            });
+
+            const activeBtn = document.getElementById('tab-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+                activeBtn.classList.remove('text-slate-600');
+            }
+
+            lucide.createIcons();
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        function switchMateriSubTab(subId) {
+            stopTTS();
+            document.querySelectorAll('#page-materi > div[id^="materi-"]').forEach(el => el.classList.add('hidden'));
+            document.getElementById('materi-' + subId).classList.remove('hidden');
+
+            document.querySelectorAll('.subtab-materi').forEach(btn => {
+                btn.classList.remove('bg-brand-teal', 'text-white', 'shadow-sm');
+                btn.classList.add('bg-slate-100', 'text-slate-700');
+            });
+
+            const activeSub = document.getElementById('subtab-' + subId);
+            activeSub.classList.add('bg-brand-teal', 'text-white', 'shadow-sm');
+            activeSub.classList.remove('bg-slate-100', 'text-slate-700');
+        }
+
+        function showOrganDetail(title, desc) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-desc').innerText = desc;
+            document.getElementById('organ-modal').classList.remove('hidden');
+        }
+
+        function closeOrganModal() {
+            document.getElementById('organ-modal').classList.add('hidden');
+        }
+
+        /* ==========================================================================
+           2. TEXT TO SPEECH (WEB SPEECH API)
+           ========================================================================== */
+        let synth = window.speechSynthesis;
+        let currentUtterance = null;
+
+        function speakText(elementId) {
+            stopTTS();
+            const el = document.getElementById(elementId);
+            if (!el) return;
+
+            if ('speechSynthesis' in window) {
+                currentUtterance = new SpeechSynthesisUtterance(el.innerText || el.textContent);
+                currentUtterance.lang = 'id-ID';
+                currentUtterance.rate = 0.9;
+
+                const statusBox = document.getElementById('global-audio-status');
+                if (statusBox) statusBox.classList.remove('hidden');
+
+                currentUtterance.onend = function() {
+                    if (statusBox) statusBox.classList.add('hidden');
+                };
+
+                synth.speak(currentUtterance);
+            }
+        }
+
+        function stopTTS() {
+            if (synth && synth.speaking) synth.cancel();
+            const statusBox = document.getElementById('global-audio-status');
+            if (statusBox) statusBox.classList.add('hidden');
+        }
+
+        /* ==========================================================================
+           3. AUDIO SYNTHESIS & GAMIFICATION ENGINE
+           ========================================================================== */
+        function playAudioFeedback(type) {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                const ctx = new AudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (type === 'correct') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(659.25, ctx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                } else {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(130, ctx.currentTime + 0.3);
+                    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                }
+            } catch (e) {}
+        }
+
+        /* ==========================================================================
+           4. MULTI-MODE QUIZ ARENA DATA & LOGIC
+           ========================================================================== */
+        let activeMode = 'classic';
+        let currentHp = 3;
+        let streak = 0;
+        let liveScore = 0;
+        let currentQuestionIndex = 0;
+        let arenaAnswered = false;
+        let rapidTimerInterval = null;
+
+        /* MODE 1: 10 PILIHAN GANDA DATA */
+        const classicQuestions = [
+            {
+                q: "Organ reproduksi utama pada pria yang berfungsi memproduksi sel sperma dan hormon testosteron adalah...",
+                opts: ["Skrotum", "Testis", "Vas Deferens", "Penis"],
+                ans: 1,
+                hint: "Organ ini berbentuk oval dan berjumlah sepasang di dalam kantong luar.",
+                exp: "Testis adalah kelenjar kelamin utama pria untuk memproduksi sel sperma & hormon testosteron."
+            },
+            {
+                q: "Kantong kulit yang berfungsi menjaga suhu testis agar optimal bagi kelangsungan hidup sperma adalah...",
+                opts: ["Epididimis", "Skrotum", "Vesikula Seminalis", "Uretra"],
+                ans: 1,
+                hint: "Fungsinya sebagai pengatur suhu (termoregulasi).",
+                exp: "Skrotum menjaga suhu testis sekitar 1-2°C lebih rendah dari suhu tubuh normal."
+            },
+            {
+                q: "Di manakah tempat terjadinya fertilisasi (peleburan sel sperma dan sel telur) pada wanita?",
+                opts: ["Ovarium", "Tuba Falopi (Oviduk)", "Uterus (Rahim)", "Vagina"],
+                ans: 1,
+                hint: "Nama lain organ ini adalah saluran telur.",
+                exp: "Fertilisasi terjadi pada Tuba Falopi (Oviduk)."
+            },
+            {
+                q: "Proses pembentukan sel telur (ovum) pada organ ovarium perempuan disebut...",
+                opts: ["Spermatogenesis", "Oogenesis", "Ovulasi", "Menstruasi"],
+                ans: 1,
+                hint: "Berawalan dengan huruf 'Oo' yang berkaitan dengan ovum.",
+                exp: "Oogenesis adalah proses pembentukan sel ovum fungsional di dalam ovarium."
+            },
+            {
+                q: "Pelepasan sel telur (ovum) matang dari ovarium menuju tuba falopi disebut...",
+                opts: ["Implantasi", "Ovulasi", "Fertilisasi", "Menstruasi"],
+                ans: 1,
+                hint: "Terjadi sekitar pertengahan siklus menstruasi (hari ke-14).",
+                exp: "Ovulasi adalah peristiwa pelepasan ovum matang dari ovarium."
+            },
+            {
+                q: "Peluruhan jaringan dinding rahim (endometrium) yang mengandung pembuluh darah akibat ovum tidak dibuahi dinamakan...",
+                opts: ["Menstruasi", "Ejakulasi", "Gametogenesis", "Gestasi"],
+                ans: 0,
+                hint: "Merupakan siklus bulanan alami pada remaja perempuan.",
+                exp: "Menstruasi terjadi karena luruhnya endometrium rahim sewaktu tidak ada pembuahan."
+            },
+            {
+                q: "Setelah terjadi fertilisasi di tuba falopi, zigot akan berkembang menjadi embrio dan menempel pada dinding...",
+                opts: ["Vagina", "Ovarium", "Uterus (Rahim)", "Serviks"],
+                ans: 2,
+                hint: "Organ tempat berkembangnya janin selama masa kehamilan.",
+                exp: "Uterus (Rahim) tempat implantasi embrio dan tumbuh kembang janin."
+            },
+            {
+                q: "Penyakit menular seksual yang disebabkan oleh infeksi bakteri Neisseria gonorrhoeae ditandai dengan keluarnya cairan nanah adalah...",
+                opts: ["HIV / AIDS", "Gonore", "Sifilis", "Herpes Simpleks"],
+                ans: 1,
+                hint: "Sering disebut juga penyakit Kencing Nanah.",
+                exp: "Gonore disebabkan oleh infeksi bakteri Neisseria gonorrhoeae."
+            },
+            {
+                q: "Virus HIV (Human Immunodeficiency Virus) sangat berbahaya karena menyerang...",
+                opts: ["Sistem Kekebalan Tubuh", "Sistem Pencernaan", "Sistem Saraf Pusat", "Sistem Pernapasan"],
+                ans: 0,
+                hint: "Merusak sel darah putih sehingga tubuh mudah terinfeksi penyakit.",
+                exp: "HIV melumpuhkan sel-sel kekebalan tubuh (sel T) penderita."
+            },
+            {
+                q: "Salah satu upaya tindakan yang benar untuk menjaga kebersihan organ reproduksi adalah...",
+                opts: ["Jarang mengganti pakaian dalam", "Menggunakan celana yang sangat ketat", "Mengeringkan organ intim setelah buang air", "Membersihkan dari arah belakang ke depan"],
+                ans: 2,
+                hint: "Mencegah area intim menjadi lembap dan berjamur.",
+                exp: "Mengeringkan organ intim dengan handuk/tisu bersih mencegah kelembapan & jamur."
+            }
+        ];
+
+        /* MODE 2: TEBAK ORGAN VISUAL (SOAL BERTAHAP DIAGRAM SVG) */
+        const hotspotQuestions = [
+            {
+                q: "Manakah organ perempuan yang berfungsi sebagai tempat terjadinya FERTILISASI (pembuahan)?",
+                gender: "wanita",
+                ansHotspot: "wanita-tuba",
+                exp: "Benar! Tuba Falopi (Oviduk) adalah saluran tempat ditemukannya sel telur dan sperma untuk pembentukan zigot."
+            },
+            {
+                q: "Manakah organ perempuan yang berfungsi memproduksi SEL TELUR (ovum) dan hormon estrogen?",
+                gender: "wanita",
+                ansHotspot: "wanita-ovarium",
+                exp: "Tepat! Ovarium adalah indung telur yang menghasilkan ovum serta hormon reproduksi wanita."
+            },
+            {
+                q: "Manakah organ tempat berkembangnya JANIN (Uterus/Rahim) selama masa kehamilan?",
+                gender: "wanita",
+                ansHotspot: "wanita-uterus",
+                exp: "Hebat! Uterus (Rahim) berdinding otot tebal tempat embrio tumbuh menjadi janin."
+            },
+            {
+                q: "Manakah organ pria yang berfungsi menghasilkan SEL SPERMA dan hormon testosteron?",
+                gender: "pria",
+                ansHotspot: "pria-testis",
+                exp: "Benar! Testis adalah organ utama penghasil sel sperma dan testosteron."
+            },
+            {
+                q: "Manakah organ pria (Vas Deferens) yang berfungsi MENYALURKAN sperma matang menuju uretra?",
+                gender: "pria",
+                ansHotspot: "pria-vas",
+                exp: "Sempurna! Vas Deferens mengangkut sperma dari epididimis menuju uretra."
+            },
+            {
+                q: "Manakah bagian KANTONG KULIT (Skrotum) yang mengatur suhu ideal bagi testis?",
+                gender: "pria",
+                ansHotspot: "pria-skrotum",
+                exp: "Tepat Sekali! Skrotum melindungi testis dan menjaga suhunya agar tetap optimal."
+            }
+        ];
+
+        /* MODE 3: MATCHING DATA */
+        const matchQuestions = [
+            {
+                left: [
+                    { id: 'm1', text: 'Testis' },
+                    { id: 'm2', text: 'Ovarium' },
+                    { id: 'm3', text: 'Tuba Falopi' }
+                ],
+                right: [
+                    { matchId: 'm2', text: 'Menghasilkan sel telur (ovum)' },
+                    { matchId: 'm1', text: 'Menghasilkan sel sperma' },
+                    { matchId: 'm3', text: 'Tempat fertilisasi' }
+                ]
+            }
+        ];
+
+        /* MODE 4: RAPID DATA */
+        const rapidQuestions = [
+            { q: "Satu sel sperma dapat membuahi lebih dari satu sel telur sekaligus.", ans: false, exp: "Salah! Hanya 1 sel sperma yang dapat menembus dan membuahi 1 ovum." },
+            { q: "Hormon Estrogen dihasilkan oleh organ Ovarium pada wanita.", ans: true, exp: "Benar! Ovarium memproduksi ovum dan hormon Estrogen/Progesteron." },
+            { q: "Vas Deferens adalah saluran yang mengangkut sel sperma matang.", ans: true, exp: "Benar! Vas Deferens menghubungkan epididimis menuju uretra." },
+            { q: "HIV/AIDS disebabkan oleh infeksi bakteri Neisseria.", ans: false, exp: "Salah! HIV disebabkan oleh Virus HIV, sedangkan Neisseria menyebabkan Gonore." }
+        ];
+
+        /* INIT QUIZ MODE */
+        function initQuizMode(mode) {
+            activeMode = mode;
+            currentHp = 3;
+            streak = 0;
+            liveScore = 0;
+            currentQuestionIndex = 0;
+            arenaAnswered = false;
+
+            const nameInput = document.getElementById('player-name-input').value.trim();
+            document.getElementById('cert-student-name').innerText = nameInput || "Siswa Hebat SMP";
+
+            document.getElementById('quiz-hub').classList.add('hidden');
+            document.getElementById('quiz-result-arena').classList.add('hidden');
+            document.getElementById('quiz-arena').classList.remove('hidden');
+
+            updateArenaHeaderUI();
+            renderModeQuestion();
+        }
+
+        function updateArenaHeaderUI() {
+            // Render Hearts
+            let heartsHtml = '';
+            for (let i = 0; i < 3; i++) {
+                heartsHtml += i < currentHp ? '❤️' : '🖤';
+            }
+            document.getElementById('hp-hearts-container').innerHTML = heartsHtml;
+            document.getElementById('streak-counter').innerText = streak + 'x';
+            document.getElementById('live-quiz-score').innerText = liveScore;
+
+            if (activeMode === 'rapid' || activeMode === 'classic') {
+                document.getElementById('rapid-timer-box').classList.remove('hidden');
+            } else {
+                document.getElementById('rapid-timer-box').classList.add('hidden');
+            }
+        }
+
+        function renderModeQuestion() {
+            arenaAnswered = false;
+            document.getElementById('arena-feedback-box').classList.add('hidden');
+            document.getElementById('btn-arena-next').classList.add('hidden');
+
+            const content = document.getElementById('dynamic-mode-content');
+            content.innerHTML = '';
+
+            if (activeMode === 'classic') {
+                renderClassicMode(content);
+            } else if (activeMode === 'hotspot') {
+                renderHotspotMode(content);
+            } else if (activeMode === 'match') {
+                renderMatchMode(content);
+            } else if (activeMode === 'rapid') {
+                renderRapidMode(content);
+            }
+
+            lucide.createIcons();
+        }
+
+        /* ---------------- MODE 1: 10 PILIHAN GANDA RENDER ---------------- */
+        let classicTimer = 20;
+        function renderClassicMode(container) {
+            clearInterval(rapidTimerInterval);
+            classicTimer = 20;
+            document.getElementById('rapid-timer-text').innerText = classicTimer + 's';
+
+            const q = classicQuestions[currentQuestionIndex];
+            container.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                        <span class="text-xs font-bold text-brand-teal">Soal ${currentQuestionIndex + 1} dari 10</span>
+                        <!-- Lifelines -->
+                        <div class="flex gap-2">
+                            <button id="btn-5050" onclick="use5050()" class="bg-amber-100 hover:bg-amber-200 text-amber-800 text-[10px] font-bold px-2.5 py-1 rounded-lg">50:50</button>
+                            <button id="btn-hint" onclick="useHint()" class="bg-sky-100 hover:bg-sky-200 text-sky-800 text-[10px] font-bold px-2.5 py-1 rounded-lg">💡 Hint</button>
+                        </div>
+                    </div>
+                    <h4 class="font-bold text-slate-800 text-base sm:text-lg leading-snug">${q.q}</h4>
+                    <p id="hint-text-box" class="hidden text-xs bg-sky-50 text-brand-sky p-2.5 rounded-xl border border-sky-200 font-semibold"></p>
+                    <div id="classic-opts-grid" class="space-y-2.5 pt-2">
+                        ${q.opts.map((opt, i) => `
+                            <button onclick="handleClassicAnswer(${i}, this)" class="classic-opt-btn w-full text-left p-3.5 rounded-2xl border-2 border-slate-200 hover:border-brand-teal transition font-medium text-xs sm:text-sm text-slate-700 flex justify-between items-center">
+                                <span>${opt}</span>
+                                <span class="w-5 h-5 rounded-full border border-slate-300 flex items-center justify-center text-[10px] font-bold text-slate-500">${String.fromCharCode(65 + i)}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            rapidTimerInterval = setInterval(() => {
+                classicTimer--;
+                document.getElementById('rapid-timer-text').innerText = classicTimer + 's';
+                if (classicTimer <= 0) {
+                    clearInterval(rapidTimerInterval);
+                    handleClassicAnswer(-1, null); // Timeout
+                }
+            }, 1000);
+        }
+
+        function use5050() {
+            const q = classicQuestions[currentQuestionIndex];
+            const btns = document.querySelectorAll('.classic-opt-btn');
+            let removed = 0;
+            btns.forEach((btn, i) => {
+                if (i !== q.ans && removed < 2) {
+                    btn.style.opacity = '0.3';
+                    btn.disabled = true;
+                    removed++;
+                }
+            });
+            document.getElementById('btn-5050').disabled = true;
+            document.getElementById('btn-5050').classList.add('opacity-40');
+        }
+
+        function useHint() {
+            const q = classicQuestions[currentQuestionIndex];
+            const box = document.getElementById('hint-text-box');
+            box.innerText = 'Petunjuk: ' + q.hint;
+            box.classList.remove('hidden');
+            document.getElementById('btn-hint').disabled = true;
+            document.getElementById('btn-hint').classList.add('opacity-40');
+        }
+
+        function handleClassicAnswer(idx, btn) {
+            clearInterval(rapidTimerInterval);
+            if (arenaAnswered) return;
+            arenaAnswered = true;
+
+            const q = classicQuestions[currentQuestionIndex];
+            if (idx === q.ans) {
+                playAudioFeedback('correct');
+                streak++;
+                liveScore += 10 + (streak * 2);
+                if (btn) btn.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-800');
+                showArenaFeedback(true, "Jawaban Benar! 🎉", q.exp);
+            } else {
+                playAudioFeedback('wrong');
+                currentHp--;
+                streak = 0;
+                if (btn) btn.classList.add('bg-rose-50', 'border-rose-500', 'text-rose-800');
+                showArenaFeedback(false, idx === -1 ? "Waktu Habis! ⏰" : "Jawaban Kurang Tepat ❌", q.exp);
+            }
+
+            updateArenaHeaderUI();
+            checkHpOrNext();
+        }
+
+        /* ---------------- MODE 2: TEBAK ORGAN VISUAL RENDER (SVG HOTSPOT) ---------------- */
+        function renderHotspotMode(container) {
+            const q = hotspotQuestions[currentQuestionIndex];
+            
+            let svgDiagram = '';
+            if (q.gender === 'wanita') {
+                svgDiagram = `
+                    <div class="relative mx-auto w-full max-w-sm h-64 bg-gradient-to-b from-teal-50 to-emerald-100 rounded-2xl border-2 border-teal-200 flex items-center justify-center p-4">
+                        <svg viewBox="0 0 200 200" class="w-full h-full">
+                            <path d="M 70 80 Q 100 60 130 80 L 115 130 Q 100 145 85 130 Z" fill="#14b8a6" opacity="0.4"/>
+                            <path d="M 80 85 Q 100 70 120 85 L 110 120 Q 100 130 90 120 Z" fill="#0d9488" />
+                            <path d="M 70 80 Q 30 70 35 100" fill="none" stroke="#0d9488" stroke-width="6"/>
+                            <path d="M 130 80 Q 170 70 165 100" fill="none" stroke="#0d9488" stroke-width="6"/>
+                            <circle cx="35" cy="105" r="12" fill="#f59e0b"/>
+                            <circle cx="165" cy="105" r="12" fill="#f59e0b"/>
+                            <rect x="90" y="130" width="20" height="40" fill="#2dd4bf" rx="4"/>
+                        </svg>
+
+                        <!-- Interactive Organ Hotspots -->
+                        <button onclick="handleHotspotClick('wanita-ovarium', this)" class="organ-hotspot absolute top-24 left-6 bg-amber-400 hover:bg-amber-500 text-slate-900 font-extrabold px-2.5 py-1 rounded-full shadow-lg text-xs border-2 border-white flex items-center gap-1">
+                            📍 Ovarium
+                        </button>
+                        <button onclick="handleHotspotClick('wanita-tuba', this)" class="organ-hotspot absolute top-12 left-12 bg-amber-400 hover:bg-amber-500 text-slate-900 font-extrabold px-2.5 py-1 rounded-full shadow-lg text-xs border-2 border-white flex items-center gap-1">
+                            📍 Tuba Falopi
+                        </button>
+                        <button onclick="handleHotspotClick('wanita-uterus', this)" class="organ-hotspot absolute top-20 left-1/2 -translate-x-1/2 bg-amber-400 hover:bg-amber-500 text-slate-900 font-extrabold px-2.5 py-1 rounded-full shadow-lg text-xs border-2 border-white flex items-center gap-1">
+                            📍 Uterus (Rahim)
+                        </button>
+                    </div>
+                `;
+            } else {
+                svgDiagram = `
+                    <div class="relative mx-auto w-full max-w-sm h-64 bg-gradient-to-b from-sky-50 to-blue-100 rounded-2xl border-2 border-sky-200 flex items-center justify-center p-4">
+                        <svg viewBox="0 0 200 200" class="w-full h-full">
+                            <circle cx="100" cy="140" r="22" fill="#38bdf8" opacity="0.3" />
+                            <circle cx="100" cy="140" r="16" fill="#0284c7" />
+                            <path d="M 100 124 C 100 80, 140 80, 140 100 C 140 120, 100 110, 100 110" fill="none" stroke="#0284c7" stroke-width="5" stroke-dasharray="3,3"/>
+                            <rect x="90" y="70" width="20" height="50" rx="8" fill="#7dd3fc" />
+                        </svg>
+
+                        <!-- Interactive Organ Hotspots -->
+                        <button onclick="handleHotspotClick('pria-testis', this)" class="organ-hotspot absolute bottom-10 left-1/2 -translate-x-1/2 bg-amber-400 hover:bg-amber-500 text-slate-900 font-extrabold px-2.5 py-1 rounded-full shadow-lg text-xs border-2 border-white flex items-center gap-1">
+                            📍 Testis
+                        </button>
+                        <button onclick="handleHotspotClick('pria-skrotum', this)" class="organ-hotspot absolute bottom-2 left-1/2 -translate-x-1/2 bg-amber-400 hover:bg-amber-500 text-slate-900 font-extrabold px-2.5 py-1 rounded-full shadow-lg text-xs border-2 border-white flex items-center gap-1">
+                            📍 Skrotum
+                        </button>
+                        <button onclick="handleHotspotClick('pria-vas', this)" class="organ-hotspot absolute top-16 right-10 bg-amber-400 hover:bg-amber-500 text-slate-900 font-extrabold px-2.5 py-1 rounded-full shadow-lg text-xs border-2 border-white flex items-center gap-1">
+                            📍 Vas Deferens
+                        </button>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                        <span class="text-xs font-bold text-brand-sky">Tebak Visual Soal ${currentQuestionIndex + 1} dari 6</span>
+                    </div>
+                    <h4 class="font-bold text-slate-800 text-base sm:text-lg leading-snug">${q.q}</h4>
+                    <p class="text-xs text-slate-500">Petunjuk: Klik langsung tombol lokasi organ pada gambar di bawah!</p>
+                    ${svgDiagram}
+                </div>
+            `;
+        }
+
+        function handleHotspotClick(clickedHotspot, btn) {
+            if (arenaAnswered) return;
+            arenaAnswered = true;
+
+            const q = hotspotQuestions[currentQuestionIndex];
+            if (clickedHotspot === q.ansHotspot) {
+                playAudioFeedback('correct');
+                streak++;
+                liveScore += 20;
+                btn.classList.remove('bg-amber-400');
+                btn.classList.add('bg-emerald-500', 'text-white');
+                showArenaFeedback(true, "Tepat Sekali! 👁️", q.exp);
+            } else {
+                playAudioFeedback('wrong');
+                currentHp--;
+                streak = 0;
+                btn.classList.remove('bg-amber-400');
+                btn.classList.add('bg-rose-500', 'text-white');
+                showArenaFeedback(false, "Kurang Tepat ❌", q.exp);
+            }
+
+            updateArenaHeaderUI();
+            checkHpOrNext();
+        }
+
+        /* ---------------- MODE 3: MATCHING RENDER ---------------- */
+        let selectedMatchLeft = null;
+        function renderMatchMode(container) {
+            selectedMatchLeft = null;
+            const q = matchQuestions[0];
+            container.innerHTML = `
+                <div class="space-y-4">
+                    <span class="text-xs font-bold text-brand-amber">Jodohkan Pasangan Organ & Fungsi</span>
+                    <p class="text-xs text-slate-600">Klik organ di sebelah kiri, lalu klik fungsinya yang sesuai di sebelah kanan!</p>
+                    <div class="grid grid-cols-2 gap-4 pt-2">
+                        <div class="space-y-2">
+                            <h5 class="font-bold text-xs text-slate-500">NAMA ORGAN:</h5>
+                            ${q.left.map(l => `
+                                <button id="left-${l.id}" onclick="selectMatchLeft('${l.id}')" class="match-left-btn w-full p-3 rounded-xl border-2 border-slate-200 text-left text-xs font-bold text-slate-700 hover:border-brand-amber transition">
+                                    ${l.text}
+                                </button>
+                            `).join('')}
+                        </div>
+                        <div class="space-y-2">
+                            <h5 class="font-bold text-xs text-slate-500">FUNGSI UTAMA:</h5>
+                            ${q.right.map((r, i) => `
+                                <button id="right-${i}" onclick="selectMatchRight('${r.matchId}', 'right-${i}')" class="match-right-btn w-full p-3 rounded-xl border-2 border-slate-200 text-left text-xs font-medium text-slate-700 hover:border-brand-amber transition">
+                                    ${r.text}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectMatchLeft(id) {
+            selectedMatchLeft = id;
+            document.querySelectorAll('.match-left-btn').forEach(b => b.classList.remove('border-brand-amber', 'bg-amber-50'));
+            const el = document.getElementById('left-' + id);
+            if (el) el.classList.add('border-brand-amber', 'bg-amber-50');
+        }
+
+        function selectMatchRight(matchId, rightElemId) {
+            if (!selectedMatchLeft) return;
+
+            const rightBtn = document.getElementById(rightElemId);
+            const leftBtn = document.getElementById('left-' + selectedMatchLeft);
+
+            if (selectedMatchLeft === matchId) {
+                playAudioFeedback('correct');
+                liveScore += 30;
+                leftBtn.classList.add('bg-emerald-100', 'text-emerald-800', 'border-emerald-500');
+                rightBtn.classList.add('bg-emerald-100', 'text-emerald-800', 'border-emerald-500');
+                leftBtn.disabled = true;
+                rightBtn.disabled = true;
+                selectedMatchLeft = null;
+
+                const disabledCount = document.querySelectorAll('.match-left-btn:disabled').length;
+                if (disabledCount === 3) {
+                    showArenaFeedback(true, "Semua Pasangan Cocok! 🧩", "Kamu berhasil menjodohkan seluruh organ dan fungsinya secara sempurna.");
+                    document.getElementById('btn-arena-next').classList.remove('hidden');
+                }
+            } else {
+                playAudioFeedback('wrong');
+                currentHp--;
+                updateArenaHeaderUI();
+                rightBtn.classList.add('bg-rose-100', 'border-rose-500');
+                setTimeout(() => rightBtn.classList.remove('bg-rose-100', 'border-rose-500'), 500);
+            }
+        }
+
+        /* ---------------- MODE 4: RAPID TIMER RENDER ---------------- */
+        let timeLeft = 10;
+        function renderRapidMode(container) {
+            clearInterval(rapidTimerInterval);
+            timeLeft = 10;
+            document.getElementById('rapid-timer-text').innerText = timeLeft + 's';
+
+            const q = rapidQuestions[currentQuestionIndex];
+            container.innerHTML = `
+                <div class="space-y-4 text-center">
+                    <span class="text-xs font-bold text-rose-600 uppercase">Rapid True/False (${currentQuestionIndex + 1}/${rapidQuestions.length})</span>
+                    <h4 class="font-bold text-slate-800 text-lg sm:text-xl py-4">${q.q}</h4>
+                    <div class="flex gap-4 justify-center">
+                        <button onclick="handleRapidAnswer(true)" class="bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold px-8 py-3.5 rounded-2xl shadow-lg transition">
+                            BENAR 👍
+                        </button>
+                        <button onclick="handleRapidAnswer(false)" class="bg-rose-500 hover:bg-rose-600 text-white font-extrabold px-8 py-3.5 rounded-2xl shadow-lg transition">
+                            SALAH 👎
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            rapidTimerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('rapid-timer-text').innerText = timeLeft + 's';
+                if (timeLeft <= 0) {
+                    clearInterval(rapidTimerInterval);
+                    handleRapidAnswer(null);
+                }
+            }, 1000);
+        }
+
+        function handleRapidAnswer(userVal) {
+            clearInterval(rapidTimerInterval);
+            if (arenaAnswered) return;
+            arenaAnswered = true;
+
+            const q = rapidQuestions[currentQuestionIndex];
+            if (userVal === q.ans) {
+                playAudioFeedback('correct');
+                streak++;
+                liveScore += 15 + (timeLeft * 2);
+                showArenaFeedback(true, "Kilat & Tepat! ⚡", q.exp);
+            } else {
+                playAudioFeedback('wrong');
+                currentHp--;
+                streak = 0;
+                showArenaFeedback(false, "Waktu Habis / Salah! ❌", q.exp);
+            }
+
+            updateArenaHeaderUI();
+            checkHpOrNext();
+        }
+
+        /* ---------------- COMMON HELPER LOGIC ---------------- */
+        function showArenaFeedback(isCorrect, title, desc) {
+            const box = document.getElementById('arena-feedback-box');
+            const titleEl = document.getElementById('arena-feedback-title');
+            const descEl = document.getElementById('arena-feedback-desc');
+
+            box.classList.remove('hidden', 'bg-emerald-50', 'bg-rose-50', 'border-emerald-200', 'border-rose-200');
+            if (isCorrect) {
+                box.classList.add('bg-emerald-50', 'border', 'border-emerald-200');
+                titleEl.className = 'font-bold text-emerald-800 text-sm';
+            } else {
+                box.classList.add('bg-rose-50', 'border', 'border-rose-200');
+                titleEl.className = 'font-bold text-rose-800 text-sm';
+            }
+
+            titleEl.innerText = title;
+            descEl.innerText = desc;
+            document.getElementById('btn-arena-next').classList.remove('hidden');
+        }
+
+        function checkHpOrNext() {
+            if (currentHp <= 0) {
+                setTimeout(() => {
+                    finishQuizArena();
+                }, 1000);
+            }
+        }
+
+        function nextArenaQuestion() {
+            let maxLen = 0;
+            if (activeMode === 'classic') maxLen = classicQuestions.length;
+            else if (activeMode === 'hotspot') maxLen = hotspotQuestions.length;
+            else if (activeMode === 'match') maxLen = matchQuestions.length;
+            else if (activeMode === 'rapid') maxLen = rapidQuestions.length;
+
+            currentQuestionIndex++;
+            if (currentQuestionIndex < maxLen && currentHp > 0) {
+                renderModeQuestion();
+            } else {
+                finishQuizArena();
+            }
+        }
+
+        function finishQuizArena() {
+            clearInterval(rapidTimerInterval);
+            document.getElementById('quiz-arena').classList.add('hidden');
+            document.getElementById('quiz-result-arena').classList.remove('hidden');
+
+            document.getElementById('final-score-display').innerText = `${liveScore} Poin`;
+            document.getElementById('hub-total-score').innerText = liveScore;
+
+            if (liveScore >= 50) {
+                confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+            }
+        }
+
+        function exitQuizArena() {
+            clearInterval(rapidTimerInterval);
+            document.getElementById('quiz-arena').classList.add('hidden');
+            document.getElementById('quiz-result-arena').classList.add('hidden');
+            document.getElementById('quiz-hub').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
